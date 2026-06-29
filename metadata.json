@@ -1,0 +1,6 @@
+{
+  "name": "Nexora",
+  "description": "تطبيق Nexora الاحترافي والذكي لإدارة المراكز التعليمية والمعلمين بمستوى SaaS عالمي",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
