@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "34385368415",
+    "project_id": "nexora-study",
+    "storage_bucket": "nexora-study.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:34385368415:android:ccb6e89a23df68177792ea",
+        "android_client_info": {
+          "package_name": "com.aistudio.centerplus.rztxqw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "34385368415-i6rnlrdgd1publr2g1mul44jumm1ud65.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aistudio.centerplus.rztxqw",
+            "certificate_hash": "3d9ffd3086cecd068fcfcc552b3f5de67639b2a9"
+          }
+        },
+        {
+          "client_id": "34385368415-lbal8vgrp0okkhjieqebqrdop59uacsi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiqqV-BO7RIh-7H-ykrIyTj1EmlW3dSWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "34385368415-lbal8vgrp0okkhjieqebqrdop59uacsi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
