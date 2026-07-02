@@ -1,0 +1,101 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ==================== Helper Functions ====================
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Checks if the current user is the Super Admin
+    function isSuperAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/super_admin)
+        && get(/databases/$(database)/documents/admins/super_admin).data.email == request.auth.token.email
+        && get(/databases/$(database)/documents/admins/super_admin).data.active == true;
+    }
+
+    // ==================== /admins/{document=**} ====================
+    // Any signed-in user can READ (needed for isSuperAdmin check)
+    match /admins/{document=**} {
+      allow read: if isSignedIn();
+      allow write: if isSuperAdmin();
+    }
+
+    // ==================== /users/{uid} ====================
+    // Super Admin can read ALL users. Users can read their own doc.
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isSuperAdmin());
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow update: if isSuperAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow delete: if isSuperAdmin();
+    }
+
+    // ==================== /centers/{centerId} ====================
+    // Super Admin can read ALL centers. Owner can read their own center.
+    match /centers/{centerId} {
+      allow read: if isSuperAdmin() || (isSignedIn() && request.auth.uid == centerId);
+      allow create: if isSignedIn() && request.auth.uid == centerId;
+      allow update: if isSuperAdmin() || (isSignedIn() && request.auth.uid == centerId);
+      allow delete: if isSuperAdmin();
+
+      // Center-scoped subcollections
+      match /{document=**} {
+        allow read, write: if isSignedIn() && (request.auth.uid == centerId || isSuperAdmin());
+      }
+    }
+
+    // ==================== /audit_logs ====================
+    match /audit_logs/{logId} {
+      allow read: if isSuperAdmin();
+      allow create: if isSuperAdmin();
+      allow update, delete: if false;
+    }
+
+    // ==================== /notifications ====================
+    match /notifications/{notifId} {
+      allow read: if isSignedIn() && (resource.data.recipientUid == request.auth.uid || isSuperAdmin());
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isSuperAdmin();
+    }
+
+    // ==================== /otp_verifications ====================
+    match /otp_verifications/{uid} {
+      allow read, write: if isSignedIn() && request.auth.uid == uid;
+    }
+
+    // ==================== /system ====================
+    match /system/{document=**} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn();
+    }
+
+    // ==================== Global collections (for unified mobile+desktop) ====================
+    match /students/{studentCode} {
+      allow read, write: if isSignedIn();
+    }
+    match /attendance/{recordId} {
+      allow read, write: if isSignedIn();
+    }
+    match /grades/{gradeId} {
+      allow read, write: if isSignedIn();
+    }
+    match /payments/{paymentId} {
+      allow read, write: if isSignedIn();
+    }
+    match /parents/{parentUid} {
+      allow read, write: if isSignedIn();
+    }
+    match /student_links/{linkId} {
+      allow read, write: if isSignedIn();
+    }
+
+    // ==================== Default Deny ====================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
